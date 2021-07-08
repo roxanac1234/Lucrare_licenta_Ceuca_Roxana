@@ -1,0 +1,65 @@
+import matplotlib.pyplot as plt
+from scipy import signal
+from CalculTrasaturiSemnalePeBenzi import impartireBenzi
+FREQ = 128
+#Metodă pentru afișarea benzilor de frecvență pentru un user
+def ploteazaBenziFrecventa(subiect, experiment, canal):
+     valoriBandaAlpha = impartireBenzi(subiect, experiment, 'Alpha', canal)
+     valoriBandaBeta = impartireBenzi(subiect, experiment, 'Beta', canal)
+     valoriBandaGamma = impartireBenzi(subiect, experiment, 'Gamma', canal)
+
+     plt.figure(figsize=[15, 15])
+     plt.title('Benzi de frecventa')
+     plt.subplot(3, 1, 1)
+     plt.xlim([0, 100])
+     plt.ylim([-100, 100])
+     plt.plot(valoriBandaAlpha, "r-")
+     plt.ylabel('Alpha')
+     plt.subplot(3, 1, 2)
+     plt.xlim([0, 175])
+     plt.ylim([-200, 200])
+     plt.plot(valoriBandaBeta)
+     plt.ylabel('Beta')
+     plt.subplot(3, 1, 3)
+     plt.xlim([0, 350])
+     plt.ylim([-200, 200])
+     plt.plot(valoriBandaGamma, color="black")
+     plt.ylabel('Gamma')
+     plt.show()
+#Metodă pentru afișarea densității puterii spectrale
+def ploteazaPSD(subiect, experiment, canal):
+     valoriBandaAlpha = impartireBenzi(subiect, experiment, 'Alpha', canal)
+     valoriBandaBeta = impartireBenzi(subiect, experiment, 'Beta', canal)
+     valoriBandaGamma = impartireBenzi(subiect, experiment, 'Gamma', canal)
+     freq_alpha, psd_alpha = signal.welch(valoriBandaAlpha, FREQ, nperseg = len(valoriBandaAlpha),
+    scaling='spectrum')
+     freq_beta, psd_beta = signal.welch(valoriBandaBeta, FREQ, nperseg = len(valoriBandaBeta),
+    scaling='spectrum')
+     freq_gamma, psd_gamma = signal.welch(valoriBandaGamma, FREQ, nperseg = len(valoriBandaGamma),
+    scaling='spectrum')
+     plt.figure(figsize = (10, 8))
+     plt.subplot(1, 3, 1)
+     plt.plot(freq_alpha, psd_alpha)
+     plt.xlabel('Frecventa [Hz]')
+     plt.xlim([7.5, 13])
+     plt.ylabel('Densitatea puterii spectrale')
+     plt.ylim([0, 250])
+     plt.title("Periodigrama Welch pentru banda Alfa")
+     plt.subplot(1, 3, 2)
+     plt.plot(freq_beta, psd_beta)
+     plt.xlabel('Frecventa [Hz]')
+     plt.xlim([13, 32])
+     plt.ylabel('Densitatea puterii spectrale')
+     plt.ylim([0, 50 ])
+     plt.title("Periodigrama Welch pentru banda Beta")
+     plt.subplot(1, 3, 3)
+     plt.plot(freq_gamma, psd_gamma)
+     plt.xlabel('Frecventa [Hz]')
+     plt.xlim([32, 64])
+     plt.ylabel('Densitatea puterii spectrale[W/Hz]')
+     plt.ylim([0, 15])
+     plt.title("Periodigrama Welch pentru banda Gamma")
+     plt.tight_layout()
+     plt.show()
+# ploteazaBenziFrecventa(1, 3, 'Fp1')
+ploteazaPSD(10, 2, 'Fp1')
